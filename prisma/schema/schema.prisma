@@ -1,15 +1,7 @@
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
-}
-
-
-// example model
-model user {
-  id Int @id @default(autoincrement())
-  name String 
 }
