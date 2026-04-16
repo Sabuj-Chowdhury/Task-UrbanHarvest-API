@@ -5,9 +5,12 @@ dotenv.config();
 interface IEnv {
   PORT: string;
   NODE_ENV: "development" | "production";
+  ADMIN_EMAIL: string;
+  ADMIN_PASSWORD: string;
+  BCRYPT_SALT_ROUND: string;
 }
 
-const requiredVariable = ["PORT", "NODE_ENV"];
+const requiredVariable = ["PORT", "NODE_ENV", "ADMIN_EMAIL", "ADMIN_PASSWORD"];
 
 const loadEnv = (): IEnv => {
   requiredVariable.forEach((key) => {
@@ -17,8 +20,10 @@ const loadEnv = (): IEnv => {
   });
   return {
     PORT: process.env.PORT as string,
-
     NODE_ENV: process.env.NODE_ENV as "development" | "production",
+    ADMIN_EMAIL: process.env.ADMIN_EMAIL as string,
+    ADMIN_PASSWORD: process.env.ADMIN_PASSWORD as string,
+    BCRYPT_SALT_ROUND: process.env.BCRYPT_SALT_ROUND as string,
   };
 };
 

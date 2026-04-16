@@ -1,6 +1,7 @@
 import { Server } from "http";
 import app from "./app";
 import { envVariable } from "./app/config/env";
+import { seedSuperAdmin } from "./app/utils/seedAdmin";
 
 let server: Server;
 
@@ -15,8 +16,12 @@ const startServer = async () => {
   }
 };
 
-// starts the server
-startServer();
+// starts the server and seed admin
+
+(async () => {
+  await startServer();
+  await seedSuperAdmin();
+})();
 
 /* 
 unhandled rejection error --->example
