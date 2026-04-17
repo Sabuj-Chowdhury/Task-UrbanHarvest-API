@@ -1,0 +1,11 @@
+model CommunityPost {
+  id String @id @default(uuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  postContent String
+  postDate    DateTime @default(now())
+
+  @@map("community_posts")
+}

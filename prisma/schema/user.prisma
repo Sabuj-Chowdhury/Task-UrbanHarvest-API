@@ -11,6 +11,7 @@ model User {
   orders         Order[]
   rentalBookings RentalBooking[]
   plants         Plant[]
+  communityPosts CommunityPost[]
 
   @@map("user")
 }

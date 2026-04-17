@@ -7,6 +7,7 @@ import { produceRouter } from "../modules/produce/produce.routes";
 import { orderRouter } from "../modules/order/order.routes";
 import { bookingRouter } from "../modules/rental/rental.routes";
 import { plantRouter } from "../modules/plants/plants.routes";
+import { communityRouter } from "../modules/communityPost/communityPost.routes";
 
 export const router = Router();
 
@@ -42,6 +43,10 @@ const moduleRoutes = [
   {
     path: "/plants",
     route: plantRouter,
+  },
+  {
+    path: "/posts",
+    route: communityRouter,
   },
 ];
 
