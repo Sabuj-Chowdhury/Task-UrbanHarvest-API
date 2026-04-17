@@ -8,3 +8,8 @@ export interface IVendorRequest {
   farmName: string;
   farmLocation: string;
 }
+
+export interface ICertificatePayload {
+  certifyingAgency: string;
+  certificationDate: string;
+}

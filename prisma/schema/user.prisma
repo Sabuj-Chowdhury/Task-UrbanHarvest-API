@@ -17,5 +17,6 @@ model VendorProfile {
 
   farmName            String
   farmLocation        String
-  certificationStatus CertificationStatus @default(PENDING)
+  certificationStatus CertificationStatus  @default(PENDING)
+  sustainabilityCerts SustainabilityCert[]
 }

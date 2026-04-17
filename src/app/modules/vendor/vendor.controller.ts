@@ -23,6 +23,27 @@ const applyVendor = tryAsync(
   },
 );
 
+const certificationsVendor = tryAsync(
+  async (req: Request & { user?: IJWTUserPayload }, res: Response) => {
+    const userEmail = req.user?.email as string;
+
+    const payload = req.body;
+
+    const certification = await VendorServices.certificationsVendor(
+      userEmail,
+      payload,
+    );
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Certification submitted successfully",
+      data: certification,
+    });
+  },
+);
+
 export const VendorControllers = {
   applyVendor,
+  certificationsVendor,
 };

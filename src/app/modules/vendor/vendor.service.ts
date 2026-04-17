@@ -1,5 +1,9 @@
 import { prisma } from "../../config/prismaInstance";
-import { IVendorPayload, IVendorRequest } from "./vendor.interface";
+import {
+  ICertificatePayload,
+  IVendorPayload,
+  IVendorRequest,
+} from "./vendor.interface";
 
 const applyVendor = async (userEmail: string, payload: IVendorPayload) => {
   // find the user
@@ -22,6 +26,33 @@ const applyVendor = async (userEmail: string, payload: IVendorPayload) => {
   return vendorApplication;
 };
 
+const certificationsVendor = async (
+  userEmail: string,
+  payload: ICertificatePayload,
+) => {
+  // Find user
+  const user = await prisma.user.findFirstOrThrow({
+    where: { email: userEmail },
+  });
+
+  // Find vendor profile
+  const vendor = await prisma.vendorProfile.findFirstOrThrow({
+    where: { userId: user.id },
+  });
+
+  // Create certification
+  const certification = await prisma.sustainabilityCert.create({
+    data: {
+      vendorId: vendor.id,
+      certifyingAgency: payload.certifyingAgency,
+      certificationDate: new Date(payload.certificationDate),
+    },
+  });
+
+  return certification;
+};
+
 export const VendorServices = {
   applyVendor,
+  certificationsVendor,
 };

@@ -10,3 +10,9 @@ vendorRouter.post(
   checkAuth(Role.CUSTOMER),
   VendorControllers.applyVendor,
 );
+
+vendorRouter.post(
+  "/certifications",
+  checkAuth(Role.CUSTOMER, Role.VENDOR),
+  VendorControllers.certificationsVendor,
+);
