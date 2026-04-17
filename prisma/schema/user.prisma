@@ -10,6 +10,7 @@ model User {
   vendorProfiles VendorProfile[]
   orders         Order[]
   rentalBookings RentalBooking[]
+  plants         Plant[]
 
   @@map("user")
 }
