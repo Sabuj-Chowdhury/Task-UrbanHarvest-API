@@ -22,6 +22,21 @@ const getAllUsers = tryAsync(async (req: Request, res: Response) => {
   });
 });
 
+const verifyCertification = tryAsync(async (req: Request, res: Response) => {
+  const vendorId = req.params.vendorId as string;
+  const { status } = req.body;
+
+  const result = await AdminServices.verifyCertification(vendorId, status);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Vendor certification updated",
+    data: result,
+  });
+});
+
 export const AdminControllers = {
   getAllUsers,
+  verifyCertification,
 };

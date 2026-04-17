@@ -10,3 +10,9 @@ adminRouter.get(
   checkAuth(Role.ADMIN),
   AdminControllers.getAllUsers,
 );
+
+adminRouter.patch(
+  "/vendors/verify/:vendorId",
+  checkAuth(Role.ADMIN),
+  AdminControllers.verifyCertification,
+);

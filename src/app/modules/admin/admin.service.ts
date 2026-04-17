@@ -1,9 +1,10 @@
-import { Prisma } from "@prisma/client";
+import { CertificationStatus, Prisma, Role } from "@prisma/client";
 import { IOptions, paginationHelper } from "../../utils/paginationHelper";
 import { userSearchableFields } from "../user/user.constants";
 import { prisma } from "../../config/prismaInstance";
+import AppError from "../../errorHelpers/AppError";
+import httpStatus from "http-status";
 
-// get all user service
 const getAllUsers = async (options: IOptions, filter: any) => {
   const { page, limit, skip, sort, order } = paginationHelper(options);
   const { search, ...filterData } = filter;
@@ -63,6 +64,63 @@ const getAllUsers = async (options: IOptions, filter: any) => {
   };
 };
 
+const verifyCertification = async (
+  vendorId: string,
+  status: CertificationStatus,
+) => {
+  return await prisma.$transaction(async (tx) => {
+    //  vendor
+    const vendor = await tx.vendorProfile.findUniqueOrThrow({
+      where: { id: vendorId },
+    });
+
+    //  certification exists
+    const certification = await tx.sustainabilityCert.findFirst({
+      where: { vendorId },
+    });
+
+    if (!certification) {
+      throw new AppError(httpStatus.NOT_FOUND, "Certification not submitted");
+    }
+
+    const previousStatus = vendor.certificationStatus;
+
+    // Prevent duplicate state
+    if (previousStatus === status) {
+      throw new AppError(httpStatus.BAD_REQUEST, "Already in this state");
+    }
+
+    //  Update vendor certification status
+    const updatedVendor = await tx.vendorProfile.update({
+      where: { id: vendorId },
+      data: {
+        certificationStatus: status,
+      },
+    });
+
+    // update roles
+    if (status === CertificationStatus.APPROVED) {
+      await tx.user.update({
+        where: { id: vendor.userId },
+        data: { role: Role.VENDOR },
+      });
+    }
+
+    if (
+      status === CertificationStatus.REJECTED &&
+      previousStatus === CertificationStatus.APPROVED
+    ) {
+      await tx.user.update({
+        where: { id: vendor.userId },
+        data: { role: Role.CUSTOMER },
+      });
+    }
+
+    return updatedVendor;
+  });
+};
+
 export const AdminServices = {
   getAllUsers,
+  verifyCertification,
 };
