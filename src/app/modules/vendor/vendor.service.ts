@@ -1,4 +1,6 @@
 import { prisma } from "../../config/prismaInstance";
+import AppError from "../../errorHelpers/AppError";
+import httpStatus from "http-status";
 import {
   ICertificatePayload,
   IVendorPayload,
@@ -12,6 +14,29 @@ const applyVendor = async (userEmail: string, payload: IVendorPayload) => {
       email: userEmail,
     },
   });
+
+  const existingVendor = await prisma.vendorProfile.findUnique({
+    where: { userId: user.id },
+  });
+
+  if (existingVendor && existingVendor.certificationStatus !== "REJECTED") {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "You have already applied for vendor",
+    );
+  }
+
+  // 🔁 Case 2: Previously rejected → allow reapply (UPDATE)
+  if (existingVendor && existingVendor.certificationStatus === "REJECTED") {
+    return await prisma.vendorProfile.update({
+      where: { userId: user.id },
+      data: {
+        farmName: payload.farmName,
+        farmLocation: payload.farmLocation,
+        certificationStatus: "PENDING", // reset
+      },
+    });
+  }
 
   const vendorPayload: IVendorRequest = {
     userId: user?.id,
