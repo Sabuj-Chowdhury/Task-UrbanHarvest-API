@@ -9,6 +9,7 @@ model User {
   updatedAt      DateTime        @updatedAt
   vendorProfiles VendorProfile[]
   orders         Order[]
+  rentalBookings RentalBooking[]
 
   @@map("user")
 }
@@ -25,6 +26,7 @@ model VendorProfile {
   rentalSpaces        RentalSpace[]
   produces            Produce[]
   orders              Order[]
+  rentalBookings      RentalBooking[]
 
   @@map("vendor")
 }

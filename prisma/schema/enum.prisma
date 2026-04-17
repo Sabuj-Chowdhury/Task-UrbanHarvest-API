@@ -21,3 +21,9 @@ enum OrderStatus {
   COMPLETED
   CANCELLED
 }
+
+enum BookingStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
