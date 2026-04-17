@@ -8,6 +8,7 @@ model User {
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
   vendorProfiles VendorProfile[]
+  orders         Order[]
 
   @@map("user")
 }
@@ -23,6 +24,7 @@ model VendorProfile {
   sustainabilityCerts SustainabilityCert[]
   rentalSpaces        RentalSpace[]
   produces            Produce[]
+  orders              Order[]
 
   @@map("vendor")
 }

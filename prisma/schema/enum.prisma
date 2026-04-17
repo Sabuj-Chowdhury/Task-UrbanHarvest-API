@@ -15,3 +15,9 @@ enum CertificationStatus {
   APPROVED
   REJECTED
 }
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}

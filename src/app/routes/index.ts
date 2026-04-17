@@ -4,6 +4,7 @@ import { userRouter } from "../modules/user/user.routes";
 import { adminRouter } from "../modules/admin/admin.routes";
 import { vendorRouter } from "../modules/vendor/vendor.routes";
 import { produceRouter } from "../modules/produce/produce.routes";
+import { orderRouter } from "../modules/order/order.routes";
 
 export const router = Router();
 
@@ -27,6 +28,10 @@ const moduleRoutes = [
   {
     path: "/produce",
     route: produceRouter,
+  },
+  {
+    path: "/order",
+    route: orderRouter,
   },
 ];
 
