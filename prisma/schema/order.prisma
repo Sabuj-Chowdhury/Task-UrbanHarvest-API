@@ -10,5 +10,7 @@ model Order {
   status    OrderStatus   @default(PENDING)
   orderDate DateTime      @default(now())
 
+  createdAt DateTime @default(now())
+
   @@map("order")
 }

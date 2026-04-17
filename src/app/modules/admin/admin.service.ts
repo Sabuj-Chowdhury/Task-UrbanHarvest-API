@@ -131,8 +131,157 @@ const verifyCertification = async (
   });
 };
 
+const getAllOrders = async (options: IOptions, filter: any) => {
+  const { page, limit, skip, sort, order } = paginationHelper(options);
+  const { search, ...filterData } = filter;
+
+  const andConditions: Prisma.OrderWhereInput[] = [];
+
+  if (search) {
+    andConditions.push({
+      OR: [
+        {
+          status: {
+            equals: search as any,
+          },
+        },
+      ],
+    });
+  }
+
+  if (Object.keys(filterData).length > 0) {
+    andConditions.push({
+      AND: Object.entries(filterData).map(([key, value]) => ({
+        [key]: {
+          equals: value,
+        },
+      })),
+    });
+  }
+
+  const where: Prisma.OrderWhereInput = andConditions.length
+    ? { AND: andConditions }
+    : {};
+
+  const data = await prisma.order.findMany({
+    where,
+    skip,
+    take: limit,
+    orderBy: { [sort]: order },
+    include: {
+      user: true,
+      produce: true,
+      vendor: true,
+    },
+  });
+
+  const total = await prisma.order.count({ where });
+
+  return {
+    meta: { page, limit, total },
+    data,
+  };
+};
+
+const getAllProduce = async (options: IOptions, filter: any) => {
+  const { page, limit, skip, sort, order } = paginationHelper(options);
+  const { search, ...filterData } = filter;
+
+  const andConditions: Prisma.ProduceWhereInput[] = [];
+
+  if (search) {
+    andConditions.push({
+      OR: [
+        { name: { contains: search, mode: "insensitive" } },
+        { description: { contains: search, mode: "insensitive" } },
+      ],
+    });
+  }
+
+  if (Object.keys(filterData).length > 0) {
+    andConditions.push({
+      AND: Object.entries(filterData).map(([key, value]) => ({
+        [key]: {
+          equals: value,
+        },
+      })),
+    });
+  }
+
+  const where: Prisma.ProduceWhereInput = andConditions.length
+    ? { AND: andConditions }
+    : {};
+
+  const data = await prisma.produce.findMany({
+    where,
+    skip,
+    take: limit,
+    orderBy: { [sort]: order },
+    include: {
+      vendor: true,
+    },
+  });
+
+  const total = await prisma.produce.count({ where });
+
+  return {
+    meta: { page, limit, total },
+    data,
+  };
+};
+
+const getAllRentalSpaces = async (options: IOptions, filter: any) => {
+  const { page, limit, skip, sort, order } = paginationHelper(options);
+  const { search, ...filterData } = filter;
+
+  const andConditions: Prisma.RentalSpaceWhereInput[] = [];
+
+  if (search) {
+    andConditions.push({
+      OR: [
+        { location: { contains: search, mode: "insensitive" } },
+        { size: { contains: search, mode: "insensitive" } },
+      ],
+    });
+  }
+
+  if (Object.keys(filterData).length > 0) {
+    andConditions.push({
+      AND: Object.entries(filterData).map(([key, value]) => ({
+        [key]: {
+          equals: value,
+        },
+      })),
+    });
+  }
+
+  const where: Prisma.RentalSpaceWhereInput = andConditions.length
+    ? { AND: andConditions }
+    : {};
+
+  const data = await prisma.rentalSpace.findMany({
+    where,
+    skip,
+    take: limit,
+    orderBy: { [sort]: order },
+    include: {
+      vendor: true,
+    },
+  });
+
+  const total = await prisma.rentalSpace.count({ where });
+
+  return {
+    meta: { page, limit, total },
+    data,
+  };
+};
+
 export const AdminServices = {
   getAllUsers,
   getVendorProfiles,
   verifyCertification,
+  getAllOrders,
+  getAllProduce,
+  getAllRentalSpaces,
 };

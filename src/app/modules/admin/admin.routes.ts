@@ -17,6 +17,24 @@ adminRouter.get(
   AdminControllers.getVendorProfiles,
 );
 
+adminRouter.get(
+  "/orders",
+  checkAuth(Role.ADMIN),
+  AdminControllers.getAllOrders,
+);
+
+adminRouter.get(
+  "/produce",
+  checkAuth(Role.ADMIN),
+  AdminControllers.getAllProduce,
+);
+
+adminRouter.get(
+  "/rental-spaces",
+  checkAuth(Role.ADMIN),
+  AdminControllers.getAllRentalSpaces,
+);
+
 adminRouter.patch(
   "/vendors/verify/:vendorId",
   checkAuth(Role.ADMIN),

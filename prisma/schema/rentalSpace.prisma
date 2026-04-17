@@ -1,11 +1,13 @@
 model RentalSpace {
-  id             String          @id @default(uuid())
-  vendorId       String
-  vendor         VendorProfile   @relation(fields: [vendorId], references: [id])
-  location       String
-  size           String
-  price          Float
-  availability   Boolean         @default(true)
+  id           String        @id @default(uuid())
+  vendorId     String
+  vendor       VendorProfile @relation(fields: [vendorId], references: [id])
+  location     String
+  size         String
+  price        Float
+  availability Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+
   rentalBookings RentalBooking[]
 
   @@map("rentalSpace")

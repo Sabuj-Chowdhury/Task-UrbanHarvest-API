@@ -47,8 +47,67 @@ const getVendorProfiles = tryAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getAllOrders = tryAsync(async (req: Request, res: Response) => {
+  const options = pick(req.query, ["page", "limit", "sort", "order"]);
+  const filter = pick(req.query, [
+    "status",
+    "userId",
+    "vendorId",
+    "produceId",
+    "search",
+  ]);
+
+  const result = await AdminServices.getAllOrders(options, filter);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "All orders retrieved",
+    meta: result.meta,
+    data: result.data,
+  });
+});
+
+const getAllProduce = tryAsync(async (req: Request, res: Response) => {
+  const options = pick(req.query, ["page", "limit", "sort", "order"]);
+  const filter = pick(req.query, ["category", "vendorId", "search"]);
+
+  const result = await AdminServices.getAllProduce(options, filter);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "All produce retrieved",
+    meta: result.meta,
+    data: result.data,
+  });
+});
+
+const getAllRentalSpaces = tryAsync(async (req: Request, res: Response) => {
+  const options = pick(req.query, ["page", "limit", "sort", "order"]);
+  const filter = pick(req.query, [
+    "location",
+    "availability",
+    "vendorId",
+    "search",
+  ]);
+
+  const result = await AdminServices.getAllRentalSpaces(options, filter);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "All rental spaces retrieved",
+    meta: result.meta,
+    data: result.data,
+  });
+});
+
 export const AdminControllers = {
   getAllUsers,
   verifyCertification,
   getVendorProfiles,
+  getAllOrders,
+  getAllProduce,
+  getAllRentalSpaces,
 };
