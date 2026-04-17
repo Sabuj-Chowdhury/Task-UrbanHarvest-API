@@ -9,3 +9,9 @@ enum UserStatus {
   INACTIVE
   DELETED
 }
+
+enum CertificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
