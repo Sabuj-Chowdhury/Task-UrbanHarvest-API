@@ -22,6 +22,7 @@ model VendorProfile {
   certificationStatus CertificationStatus  @default(PENDING)
   sustainabilityCerts SustainabilityCert[]
   rentalSpaces        RentalSpace[]
+  produces            Produce[]
 
   @@map("vendor")
 }
