@@ -6,6 +6,7 @@ import {
   IVendorPayload,
   IVendorRequest,
 } from "./vendor.interface";
+import { CertificationStatus } from "@prisma/client";
 
 const applyVendor = async (userEmail: string, payload: IVendorPayload) => {
   // find the user
@@ -64,6 +65,41 @@ const certificationsVendor = async (
   const vendor = await prisma.vendorProfile.findFirstOrThrow({
     where: { userId: user.id },
   });
+
+  // existing certificate
+  const existingCertificate = await prisma.sustainabilityCert.findFirst({
+    where: { vendorId: vendor.id },
+  });
+
+  if (vendor.certificationStatus === CertificationStatus.APPROVED) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "Certification already approved",
+    );
+  }
+
+  if (
+    vendor.certificationStatus === CertificationStatus.PENDING &&
+    existingCertificate
+  ) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "Certification already submitted",
+    );
+  }
+
+  if (
+    vendor.certificationStatus === CertificationStatus.REJECTED &&
+    existingCertificate
+  ) {
+    return await prisma.sustainabilityCert.update({
+      where: { id: existingCertificate.id },
+      data: {
+        certifyingAgency: payload.certifyingAgency,
+        certificationDate: new Date(payload.certificationDate),
+      },
+    });
+  }
 
   // Create certification
   const certification = await prisma.sustainabilityCert.create({
