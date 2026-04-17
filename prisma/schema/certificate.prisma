@@ -4,4 +4,6 @@ model SustainabilityCert {
   vendor            VendorProfile @relation(fields: [vendorId], references: [id])
   certifyingAgency  String
   certificationDate DateTime
+
+  @@map("certificate")
 }

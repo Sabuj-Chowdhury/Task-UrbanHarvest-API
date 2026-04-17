@@ -11,6 +11,12 @@ adminRouter.get(
   AdminControllers.getAllUsers,
 );
 
+adminRouter.get(
+  "/vedonrs-application",
+  checkAuth(Role.ADMIN),
+  AdminControllers.getVendorProfiles,
+);
+
 adminRouter.patch(
   "/vendors/verify/:vendorId",
   checkAuth(Role.ADMIN),

@@ -36,7 +36,19 @@ const verifyCertification = tryAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getVendorProfiles = tryAsync(async (req: Request, res: Response) => {
+  const result = await AdminServices.getVendorProfiles();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "pending vendors",
+    data: result,
+  });
+});
+
 export const AdminControllers = {
   getAllUsers,
   verifyCertification,
+  getVendorProfiles,
 };

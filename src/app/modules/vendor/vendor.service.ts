@@ -3,6 +3,7 @@ import AppError from "../../errorHelpers/AppError";
 import httpStatus from "http-status";
 import {
   ICertificatePayload,
+  ISpacePayload,
   IVendorPayload,
   IVendorRequest,
 } from "./vendor.interface";
@@ -113,7 +114,106 @@ const certificationsVendor = async (
   return certification;
 };
 
+const createRentalSpace = async (userEmail: string, payload: ISpacePayload) => {
+  const user = await prisma.user.findFirstOrThrow({
+    where: { email: userEmail },
+  });
+
+  const vendor = await prisma.vendorProfile.findFirstOrThrow({
+    where: { userId: user.id },
+  });
+
+  if (vendor.certificationStatus !== CertificationStatus.APPROVED) {
+    throw new AppError(httpStatus.FORBIDDEN, "Vendor not approved");
+  }
+
+  const rentalSpace = await prisma.rentalSpace.create({
+    data: {
+      vendorId: vendor.id,
+      location: payload.location,
+      size: payload.size,
+      price: payload.price,
+    },
+  });
+
+  return rentalSpace;
+};
+
+const updateRentalSpace = async (
+  userEmail: string,
+  id: string,
+  payload: Partial<ISpacePayload>,
+) => {
+  const user = await prisma.user.findFirstOrThrow({
+    where: { email: userEmail },
+  });
+
+  const vendor = await prisma.vendorProfile.findFirstOrThrow({
+    where: { userId: user.id },
+  });
+
+  const rental = await prisma.rentalSpace.findUniqueOrThrow({
+    where: { id },
+  });
+
+  // Ownership check
+  if (rental.vendorId !== vendor.id) {
+    throw new AppError(httpStatus.FORBIDDEN, "Not your rental space");
+  }
+
+  return await prisma.rentalSpace.update({
+    where: { id },
+    data: payload,
+  });
+};
+
+const getMyRentalSpaces = async (userEmail: string) => {
+  const user = await prisma.user.findFirstOrThrow({
+    where: { email: userEmail },
+  });
+
+  const vendor = await prisma.vendorProfile.findFirstOrThrow({
+    where: { userId: user.id },
+  });
+
+  return await prisma.rentalSpace.findMany({
+    where: { vendorId: vendor.id },
+  });
+};
+
+const deleteRentalSpace = async (userEmail: string, id: string) => {
+  const user = await prisma.user.findFirstOrThrow({
+    where: { email: userEmail },
+  });
+
+  const vendor = await prisma.vendorProfile.findFirstOrThrow({
+    where: { userId: user.id },
+  });
+
+  const rental = await prisma.rentalSpace.findUniqueOrThrow({
+    where: { id },
+  });
+
+  if (!rental) {
+    throw new AppError(httpStatus.BAD_REQUEST, "no such rental spaces");
+  }
+
+  if (rental.vendorId !== vendor.id) {
+    throw new AppError(httpStatus.FORBIDDEN, "Not your rental space");
+  }
+
+  const result = await prisma.rentalSpace.delete({
+    where: { id },
+  });
+
+  return result;
+};
+
 export const VendorServices = {
   applyVendor,
   certificationsVendor,
+  createRentalSpace,
+  getMyRentalSpaces,
+  updateRentalSpace,
+  deleteRentalSpace,
 };

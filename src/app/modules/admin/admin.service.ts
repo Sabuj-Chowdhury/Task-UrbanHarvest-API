@@ -64,6 +64,17 @@ const getAllUsers = async (options: IOptions, filter: any) => {
   };
 };
 
+// get all vendor where certification is pending
+const getVendorProfiles = async () => {
+  const vendors = await prisma.vendorProfile.findMany({
+    where: {
+      certificationStatus: CertificationStatus.PENDING,
+    },
+  });
+
+  return vendors;
+};
+
 const verifyCertification = async (
   vendorId: string,
   status: CertificationStatus,
@@ -122,5 +133,6 @@ const verifyCertification = async (
 
 export const AdminServices = {
   getAllUsers,
+  getVendorProfiles,
   verifyCertification,
 };

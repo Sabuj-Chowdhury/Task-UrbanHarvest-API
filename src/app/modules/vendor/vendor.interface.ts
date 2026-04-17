@@ -13,3 +13,9 @@ export interface ICertificatePayload {
   certifyingAgency: string;
   certificationDate: string;
 }
+
+export interface ISpacePayload {
+  location: string;
+  size: string;
+  price: number;
+}

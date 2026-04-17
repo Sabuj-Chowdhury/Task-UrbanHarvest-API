@@ -43,7 +43,78 @@ const certificationsVendor = tryAsync(
   },
 );
 
+const createRentalSpace = tryAsync(
+  async (req: Request & { user?: IJWTUserPayload }, res: Response) => {
+    const userEmail = req.user?.email as string;
+
+    const payload = req.body;
+
+    const rentalSpace = await VendorServices.createRentalSpace(
+      userEmail,
+      payload,
+    );
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "rental space listed successfully",
+      data: rentalSpace,
+    });
+  },
+);
+
+const updateRentalSpace = tryAsync(
+  async (req: Request & { user?: IJWTUserPayload }, res: Response) => {
+    const email = req.user?.email as string;
+    const id = req.params.id as string;
+
+    const result = await VendorServices.updateRentalSpace(email, id, req.body);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Rental space updated",
+      data: result,
+    });
+  },
+);
+
+const getMyRentalSpaces = tryAsync(
+  async (req: Request & { user?: IJWTUserPayload }, res: Response) => {
+    const email = req.user?.email as string;
+
+    const result = await VendorServices.getMyRentalSpaces(email);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "My rental spaces",
+      data: result,
+    });
+  },
+);
+
+const deleteRentalSpace = tryAsync(
+  async (req: Request & { user?: IJWTUserPayload }, res: Response) => {
+    const email = req.user?.email as string;
+    const id = req.params.id as string;
+
+    const result = await VendorServices.deleteRentalSpace(email, id);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: "Rental space deleted",
+      data: result,
+    });
+  },
+);
+
 export const VendorControllers = {
   applyVendor,
   certificationsVendor,
+  createRentalSpace,
+  updateRentalSpace,
+  getMyRentalSpaces,
+  deleteRentalSpace,
 };

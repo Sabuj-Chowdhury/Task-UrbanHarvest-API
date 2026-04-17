@@ -8,6 +8,8 @@ model User {
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
   vendorProfiles VendorProfile[]
+
+  @@map("user")
 }
 
 model VendorProfile {
@@ -19,4 +21,7 @@ model VendorProfile {
   farmLocation        String
   certificationStatus CertificationStatus  @default(PENDING)
   sustainabilityCerts SustainabilityCert[]
+  rentalSpaces        RentalSpace[]
+
+  @@map("vendor")
 }
